@@ -7,6 +7,10 @@ import { useState, useMemo } from "react";
 import { HPLCMetadata, PeakEntry, SpecRange } from "./types";
 import { roundHalfUp, verifySystemSuitability, calculateAssay } from "./utils/calc";
 
+// Import Assets safely for all environments
+import hplcEquipmentImg from "./assets/images/hplc_equipment_1783405987386.jpg";
+import medicineVialsImg from "./assets/images/medicine_vials_1783406003842.jpg";
+
 // Modular UI Components
 import ReportViewer from "./components/ReportViewer";
 import AIParsingBox from "./components/AIParsingBox";
@@ -368,21 +372,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* 평점 및 사용자 리뷰 장식 */}
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4 border-t border-slate-200/80 max-w-xl mx-auto lg:mx-0">
-                  <div className="flex -space-x-2">
-                    <span className="w-8 h-8 rounded-full bg-teal-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-teal-800">QC</span>
-                    <span className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-800">RD</span>
-                    <span className="w-8 h-8 rounded-full bg-[#004D4D] border-2 border-white flex items-center justify-center text-[10px] font-bold text-white">GMP</span>
-                    <span className="w-8 h-8 rounded-full bg-amber-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-amber-800">QA</span>
-                  </div>
-                  <div className="text-left font-sans">
-                    <div className="flex text-amber-500 text-xs font-bold">★★★★★</div>
-                    <p className="text-[11px] text-slate-500 font-medium font-sans">제약회사 QC/QA 실무 분석 및 신뢰성 평가 4.9/5 (1,200+ Validations)</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 text-xs text-slate-500 pt-2 font-sans">
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 text-xs text-slate-500 pt-6 border-t border-slate-100 font-sans">
                   <span className="flex items-center gap-1.5 font-semibold">
                     <ShieldCheck className="w-4 h-4 text-teal-600" />
                     KFDA 완제의약품 규격 준수
@@ -402,10 +392,13 @@ export default function App() {
               <div className="lg:col-span-5 relative">
                 <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/3] sm:aspect-square object-cover">
                   <img 
-                    src="/src/assets/images/hplc_equipment_1783405987386.jpg" 
+                    src={hplcEquipmentImg} 
                     alt="HPLC Analytical Laboratory Equipment and Medicine" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1617155093730-a8bf47be792d?auto=format&fit=crop&w=1000&q=80";
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#003333]/40 via-transparent to-transparent"></div>
                   {/* 이미지 하단 플로팅 오버레이 */}
@@ -616,12 +609,12 @@ export default function App() {
               <div className="relative">
                 <div className="relative z-10 rounded-2xl overflow-hidden shadow-xl border-4 border-white aspect-[4/3] object-cover bg-slate-200">
                   <img 
-                    src="/src/assets/images/medicine_vials_1783406003842.jpg" 
+                    src={medicineVialsImg} 
                     alt="Pharmaceutical Liquid Medicine Vials and Medical Pills" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=1000&q=80";
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#003333]/30 via-transparent to-transparent"></div>
