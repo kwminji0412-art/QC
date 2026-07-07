@@ -7,10 +7,6 @@ import { useState, useMemo } from "react";
 import { HPLCMetadata, PeakEntry, SpecRange } from "./types";
 import { roundHalfUp, verifySystemSuitability, calculateAssay } from "./utils/calc";
 
-// Import Assets safely for all environments
-import hplcEquipmentImg from "./assets/images/hplc_equipment_1783405987386.jpg";
-import medicineVialsImg from "./assets/images/medicine_vials_1783406003842.jpg";
-
 // Modular UI Components
 import ReportViewer from "./components/ReportViewer";
 import AIParsingBox from "./components/AIParsingBox";
@@ -392,12 +388,12 @@ export default function App() {
               <div className="lg:col-span-5 relative">
                 <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/3] sm:aspect-square object-cover">
                   <img 
-                    src={hplcEquipmentImg} 
+                    src="https://images.unsplash.com/photo-1617155093730-a8bf47be792d?auto=format&fit=crop&w=1000&q=80" 
                     alt="HPLC Analytical Laboratory Equipment and Medicine" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      e.currentTarget.src = "https://images.unsplash.com/photo-1617155093730-a8bf47be792d?auto=format&fit=crop&w=1000&q=80";
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1579165466541-71302dd7d42b?auto=format&fit=crop&w=1000&q=80";
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#003333]/40 via-transparent to-transparent"></div>
@@ -609,12 +605,12 @@ export default function App() {
               <div className="relative">
                 <div className="relative z-10 rounded-2xl overflow-hidden shadow-xl border-4 border-white aspect-[4/3] object-cover bg-slate-200">
                   <img 
-                    src={medicineVialsImg} 
+                    src="https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=1000&q=80" 
                     alt="Pharmaceutical Liquid Medicine Vials and Medical Pills" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      e.currentTarget.src = "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=1000&q=80";
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63?auto=format&fit=crop&w=1000&q=80";
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#003333]/30 via-transparent to-transparent"></div>
