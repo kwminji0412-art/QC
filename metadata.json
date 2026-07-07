@@ -1,0 +1,6 @@
+{
+  "name": "완제의약품 HPLC Assay QC 검증기",
+  "description": "제약회사 QC 부서의 완제의약품(FPP) HPLC 함량시험(Assay) 데이터 검증 및 시험성적서(초안) 작성 전문 어시스턴트 웹 애플리케이션입니다.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
