@@ -346,7 +346,7 @@ export default function App() {
                 </h2>
                 
                 <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium font-sans">
-                  Agilent, Waters 등 원시 크로마토그램 피크 데이터를 실시간 자동 파싱하여 시스템 적합성(RSD)과 성분 함량을 즉각 산출합니다. 수동 연산 오차율 0% 도달 및 ALCOA+ 데이터 무결성 지침을 충족하는 GMP 시험성적서 초안을 지금 무료로 발행해보세요.
+                  Agilent, Waters 등 Raw Data 크로마토그램 피크 데이터를 실시간 자동 파싱하여 시스템 적합성(RSD)과 성분 함량을 즉각 산출합니다. 수동 연산 오차율 0% 도달 및 ALCOA+ 데이터 무결성 지침을 충족하는 GMP 시험성적서 초안을 지금 무료로 발행해보세요.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
@@ -436,7 +436,7 @@ export default function App() {
                   </div>
                   <h3 className="text-sm font-bold text-slate-900 leading-snug">지능형 자동 파싱 (AI Parser)</h3>
                   <p className="text-slate-600 text-[11px] leading-relaxed font-medium">
-                    Agilent, Waters 등 원시 피크 리포트를 그대로 복사해 붙여넣으면 분석 엔진이 구조화하여 로드합니다.
+                    Agilent, Waters 등 Raw Data 피크 리포트를 그대로 복사해 붙여넣으면 분석 엔진이 구조화하여 로드합니다.
                   </p>
                 </div>
               </div>
@@ -650,8 +650,8 @@ export default function App() {
                       <Check className="w-3.5 h-3.5" />
                     </span>
                     <div>
-                      <h4 className="text-slate-900 font-bold text-xs sm:text-sm">사사오입 보정 연산 역추적 프로세스</h4>
-                      <p className="text-slate-500 text-[11px] sm:text-xs leading-relaxed font-medium">GMP 감사관의 현장 실사에서도 즉각 입증 가능한 완벽한 역추적 연산 원값 로그 시스템이 무결하게 작동합니다.</p>
+                      <h4 className="text-slate-900 font-bold text-xs sm:text-sm">표준 반올림 보정 연산 역추적 프로세스</h4>
+                      <p className="text-slate-500 text-[11px] sm:text-xs leading-relaxed font-medium">GMP 감사관의 현장 실사에서도 즉각 입증 가능한 완벽한 역추적 연산 Raw Value 로그 시스템이 무결하게 작동합니다.</p>
                     </div>
                   </div>
 
@@ -683,7 +683,7 @@ export default function App() {
               {/* 단계 1 */}
               <div className="space-y-4 relative z-10 bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
                 <div className="w-10 h-10 rounded-xl bg-[#004D4D] text-white font-bold text-xs sm:text-sm flex items-center justify-center shadow-md">01</div>
-                <h4 className="font-bold text-base text-slate-950">원시 리포트 복사</h4>
+                <h4 className="font-bold text-base text-slate-950">Raw Data 리포트 복사</h4>
                 <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">HPLC 분석 소프트웨어(Agilent ChemStation 등)에서 피크 면적 리포트 전문을 그대로 클립보드에 복사합니다.</p>
               </div>
 
@@ -724,10 +724,10 @@ export default function App() {
                 <div className="space-y-2 pb-2">
                   <h4 className="font-bold text-slate-900 flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#004D4D]"></span>
-                    사사오입 연산 역추적 프리뷰 (Round Half Up Audit-Trail)
+                    반올림 연산 역추적 프리뷰 (Round Half Up Audit-Trail)
                   </h4>
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed pl-4.5 font-medium">
-                    스프레드시트 연산 시 발생하는 미세한 계산 오차를 증명하기 위해, 모든 연산은 사사오입(Round Half Up) 함수를 이용해 규격화되며, 보정계수(Correction Factor) 반영 전 원값(Raw Value)을 소수점 8자리까지 역추적하여 성적서 하단에 감사 프리뷰로 제공합니다.
+                    스프레드시트 연산 시 발생하는 미세한 계산 오차를 증명하기 위해, 모든 연산은 표준 반올림(Round Half Up) 함수를 이용해 규격화되며, 보정계수(Correction Factor) 반영 전 Raw Value(원값)를 소수점 8자리까지 역추적하여 성적서 하단에 감사 프리뷰로 제공합니다.
                   </p>
                 </div>
 
@@ -892,7 +892,7 @@ export default function App() {
             <div className="bg-amber-50 rounded-2xl p-5 border border-amber-200/80 space-y-2.5 shadow-sm">
               <div className="flex items-center gap-2 text-amber-900 font-bold text-xs sm:text-sm tracking-tight">
                 <AlertTriangle className="w-5 h-5 text-amber-600" />
-                HPLC 원시 데이터 검증 이슈 검출 ({validationIssues.length}건)
+                HPLC Raw Data 검증 이슈 검출 ({validationIssues.length}건)
               </div>
               <div className="max-h-24 overflow-y-auto text-xs text-amber-800 space-y-1.5 pl-2 font-medium">
                 {validationIssues.map((issue, idx) => (
@@ -1059,6 +1059,39 @@ export default function App() {
                         )}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+
+                {/* 3. 개별 시료 계산식 및 산출 수식 상세 카드 */}
+                <div className="space-y-3 bg-indigo-50/40 p-5 rounded-2xl border border-indigo-100">
+                  <h3 className="font-bold text-indigo-950 text-sm flex items-center gap-2 border-l-4 border-indigo-600 pl-3 tracking-tight">
+                    계산식 및 산출 수식 상세 (Calculation Equations)
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="bg-white p-3.5 rounded-xl border border-indigo-100/80 text-xs font-mono text-slate-800 shadow-sm">
+                      <span className="font-bold text-indigo-900 block font-sans mb-1">[함량 계산 공식]</span>
+                      <p className="text-slate-900 font-bold">Assay (%) = (시료 Peak Area ÷ 표준 Peak Area 평균) × 100 × 보정계수</p>
+                      <p className="text-slate-500 text-[11px] font-sans mt-0.5">※ 보정계수 = (표준품 순도 ÷ 100) × (표준품 칭량 ÷ 시료 칭량) × (시료 희석배율 ÷ 표준품 희석배율)</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {assayResults.map((r, idx) => (
+                        <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-900 text-xs font-sans">• {r.componentName} ({r.sampleId})</span>
+                            <span className="text-indigo-600 font-mono font-bold text-xs">{r.roundedAssay.toFixed(2)} %</span>
+                          </div>
+                          <div className="bg-slate-50 p-2.5 rounded-lg text-[11px] font-mono text-slate-700 border border-slate-150 leading-relaxed">
+                            {r.formulaExpression || `${r.area} ÷ ${r.stdAreaMean} × 100 × ${r.correctionFactor} = ${r.roundedAssay}%`}
+                          </div>
+                          {r.correctionFactorFormula && (
+                            <p className="text-[10px] text-slate-500 font-mono pl-1">
+                              보정계수: {r.correctionFactorFormula}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

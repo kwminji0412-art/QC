@@ -5,7 +5,7 @@
 
 import { HPLCMetadata, PeakEntry, SpecRange, SystemSuitabilityResult, AssayResultRow } from "../types";
 
-// 4. 반올림 규칙: 사사오입 (round-half-up) 정밀 구현
+// 4. 반올림 규칙: 표준 반올림 (round-half-up) 정밀 구현
 export function roundHalfUp(num: number, decimals: number): number {
   if (isNaN(num) || !isFinite(num)) return 0;
   const factor = Math.pow(10, decimals);
@@ -99,6 +99,14 @@ export function verifySystemSuitability(peaks: PeakEntry[]): SystemSuitabilityRe
       }
     }
 
+    const rtRSDFormula = rts.length > 1
+      ? `(${rtSD.toFixed(4)} ÷ ${rtMean.toFixed(3)}) × 100 = ${rtRSD.toFixed(2)}%`
+      : "반복주입 부족 (RSD 계산 불가)";
+
+    const areaRSDFormula = areas.length > 1
+      ? `(${areaSD.toFixed(1)} ÷ ${areaMean.toFixed(0)}) × 100 = ${areaRSD.toFixed(2)}%`
+      : "반복주입 부족 (RSD 계산 불가)";
+
     results.push({
       componentName: displayName,
       rtMean,
@@ -111,6 +119,8 @@ export function verifySystemSuitability(peaks: PeakEntry[]): SystemSuitabilityRe
       areaStatus,
       overallStatus,
       notes,
+      rtRSDFormula,
+      areaRSDFormula,
     });
   });
 
@@ -142,10 +152,24 @@ export function calculateAssay(
   }
   
   // 보정계수 = (표준품 순도(%) ÷ 100) × 희석배율 보정비 (없으면 1)
-  // 단, 순도가 기본값 100이고 희석배율이 없는 경우 보정계수는 1이 된다.
   const hasPurity = metadata.stdPurity !== undefined && metadata.stdPurity > 0;
   const purityFactor = hasPurity ? metadata.stdPurity / 100 : 1;
   const correctionFactor = purityFactor * dilutionRatio;
+
+  const stdPurity = metadata.stdPurity ?? 100;
+  const stdW = metadata.stdWeight || 0;
+  const smpW = metadata.sampleWeight || 0;
+  const stdDil = metadata.stdDilution || 100;
+  const smpDil = metadata.sampleDilution || 100;
+
+  let correctionFactorFormula = "";
+  if (hasWeights && hasDilutions) {
+    correctionFactorFormula = `(${stdPurity} / 100) × (${stdW} mg / ${smpW} mg) × (${smpDil} / ${stdDil}) = ${correctionFactor.toFixed(6)}`;
+  } else if (hasPurity && stdPurity !== 100) {
+    correctionFactorFormula = `(${stdPurity} / 100) = ${correctionFactor.toFixed(6)} (칭량/희석기본값 100)`;
+  } else {
+    correctionFactorFormula = `기본 보정계수 = 1.000000`;
+  }
 
   // 시료(Sample) 추출
   const samples = peaks.filter((p) => p.type === "Sample");
@@ -173,6 +197,8 @@ export function calculateAssay(
         area: sample.area,
         stdAreaMean,
         correctionFactor,
+        correctionFactorFormula,
+        formulaExpression: `Area 0 이하로 계산 불가`,
         rawAssay: 0,
         roundedAssay: 0,
         status: "부적합",
@@ -192,6 +218,8 @@ export function calculateAssay(
         area: sample.area,
         stdAreaMean: 0,
         correctionFactor,
+        correctionFactorFormula,
+        formulaExpression: `표준액 Area 평균 0으로 계산 불가`,
         rawAssay: 0,
         roundedAssay: 0,
         status: "미등록",
@@ -205,8 +233,10 @@ export function calculateAssay(
     // 함량 계산
     // 함량(%) = (시료 Area ÷ 표준 Area 평균) × 100 × 보정계수
     const rawAssay = (sample.area / stdAreaMean) * 100 * correctionFactor;
-    // 반올림: 소수 둘째 자리 (사사오입)
+    // 반올림: 소수 둘째 자리
     const roundedAssay = roundHalfUp(rawAssay, 2);
+
+    const formulaExpression = `(${sample.area.toLocaleString()} ÷ ${stdAreaMean.toLocaleString(undefined, { maximumFractionDigits: 0 })}) × 100 × ${correctionFactor.toFixed(6)} = ${rawAssay.toFixed(4)}% → ${roundedAssay.toFixed(2)}% (소수점 이하 2자리 반올림)`;
 
     let status: "적합" | "부적합" | "미등록" | "시료 미검출" = "적합";
     let deviationDirection: "초과" | "미달" | "정상" | "N/A" = "정상";
@@ -239,6 +269,8 @@ export function calculateAssay(
       area: sample.area,
       stdAreaMean,
       correctionFactor,
+      correctionFactorFormula,
+      formulaExpression,
       rawAssay,
       roundedAssay,
       status,
@@ -262,6 +294,8 @@ export function calculateAssay(
         area: 0,
         stdAreaMean: stdMean,
         correctionFactor,
+        correctionFactorFormula,
+        formulaExpression: "시료 미검출로 계산 불가",
         rawAssay: 0,
         roundedAssay: 0,
         status: "시료 미검출",

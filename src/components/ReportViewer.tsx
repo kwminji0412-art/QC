@@ -61,6 +61,10 @@ export default function ReportViewer({ metadata, suitabilityList, assayResults, 
       )
       .join("\n");
 
+    const assayFormulas = assayResults
+      .map((r) => `- ${r.componentName} (${r.sampleId}): ${r.formulaExpression || `(${r.area} / ${r.stdAreaMean}) * 100 * ${r.correctionFactor} = ${r.roundedAssay}%`}`)
+      .join("\n");
+
     const specText = specs.map((s) => `- ${s.componentName}: ${s.min.toFixed(2)} ~ ${s.max.toFixed(2)} %`).join("\n");
 
     return `[완제의약품 함량시험 성적서 (초안)]
@@ -88,21 +92,26 @@ ${sysTable}
 |---|---|---|---|---|---|
 ${assayTable}
 
-■ 3. 종합 결론
+■ 3. 함량 계산식 및 산출 근거
+- 산식: 함량(%) = (시료 Peak Area ÷ 표준 Peak Area 평균) × 100 × 보정계수
+- 보정계수 산식: (표준 순도% / 100) × (표준 칭량 / 시료 칭량) × (시료 희석배율 / 표준 희석배율)
+${assayFormulas}
+
+■ 4. 종합 결론
 - ${finalConclusion}
 
-■ 4. 특이사항 / 비고
+■ 5. 특이사항 / 비고
 ${suitabilityList.flatMap((s) => s.notes).map((n) => `- [적합성] ${n}`).join("\n")}
 ${assayResults.flatMap((r) => r.notes).map((n) => `- [함량] ${n}`).join("\n")}
 - 설정된 스펙 기준:
 ${specText}
 
-■ 5. 서명
+■ 6. 서명
 - 시험자: ______________  날짜: ______
 - 검토자: ______________  날짜: ______
 - 승인자: ______________  날짜: ______
 
-※ 본 문서는 AI 보조 도구로 산출된 초안이며, 정식 GMP 문서로 사용하기 전 QC 책임자의 검토·승인 및 원본 raw data 대사가 필요합니다.`;
+※ 본 문서는 AI 보조 도구로 산출된 초안이며, 정식 GMP 문서로 사용하기 전 QC 책임자의 검토·승인 및 원본 Raw Data 대사가 필요합니다.`;
   };
 
   const handleCopy = () => {
@@ -339,17 +348,55 @@ ${specText}
           </div>
         </div>
 
-        {/* 3. 종합 결론 */}
+        {/* 3. 함량 계산식 및 산출 근거 */}
         <div className="py-6 border-b border-slate-200 space-y-4 text-xs sm:text-sm">
-          <h2 className="font-bold text-slate-900 border-l-4 border-teal-700 pl-2.5 mb-2.5 tracking-tight text-sm">■ 3. 종합 결론</h2>
+          <h2 className="font-bold text-slate-900 border-l-4 border-teal-700 pl-2.5 mb-2.5 tracking-tight text-sm">
+            ■ 3. 함량 계산식 및 산출 근거 (Calculation Formula Details)
+          </h2>
+          <div className="bg-slate-50/80 p-4.5 rounded-xl border border-slate-200 space-y-3 font-mono text-xs text-slate-800">
+            <div className="bg-white p-3.5 rounded-lg border border-slate-200/80 space-y-1">
+              <p className="font-bold text-teal-800 font-sans">[기본 함량 산출식]</p>
+              <p className="text-slate-800 font-semibold">
+                Assay (%) = (시료 Peak Area ÷ 표준 Peak Area 평균) × 100 × 보정계수
+              </p>
+              <p className="text-slate-500 text-[11px] mt-0.5 font-sans">
+                ※ 보정계수(Correction Factor) = (표준품 순도 ÷ 100) × (표준품 칭량 ÷ 시료 칭량) × (시료 희석배율 ÷ 표준품 희석배율)
+              </p>
+            </div>
+            
+            <div className="space-y-2 pt-1 font-sans">
+              <p className="font-bold text-slate-900 text-xs">■ 성분 및 시료별 수치 대입 연산식:</p>
+              {assayResults.map((r, idx) => (
+                <div key={idx} className="bg-white p-3 rounded-lg border border-slate-200 space-y-1 font-mono text-xs">
+                  <div className="flex items-center justify-between font-bold text-slate-900 font-sans">
+                    <span>• {r.componentName} ({r.sampleId})</span>
+                    <span className="text-teal-800 font-mono text-xs">최종 보고 함량: {r.roundedAssay > 0 ? `${r.roundedAssay.toFixed(2)} %` : "N/A"}</span>
+                  </div>
+                  <p className="text-slate-800 text-[11px] font-semibold leading-relaxed">
+                    대입 연산: {r.formulaExpression || `(${r.area.toLocaleString()} ÷ ${r.stdAreaMean.toLocaleString()}) × 100 × ${r.correctionFactor.toFixed(6)} = ${r.roundedAssay.toFixed(2)}%`}
+                  </p>
+                  {r.correctionFactorFormula && (
+                    <p className="text-slate-500 text-[10px]">
+                      보정계수 상세: {r.correctionFactorFormula}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 4. 종합 결론 */}
+        <div className="py-6 border-b border-slate-200 space-y-4 text-xs sm:text-sm">
+          <h2 className="font-bold text-slate-900 border-l-4 border-teal-700 pl-2.5 mb-2.5 tracking-tight text-sm">■ 4. 종합 결론</h2>
           <div className={`p-5 rounded-xl border ${hasFailure ? "bg-rose-50 border-rose-200 text-rose-950 shadow-inner" : "bg-emerald-50/80 border-emerald-200 text-emerald-950 shadow-inner"}`}>
             <p className="font-bold text-xs sm:text-sm leading-relaxed">{finalConclusion}</p>
           </div>
         </div>
 
-        {/* 4. 특이사항 / 비고 */}
+        {/* 5. 특이사항 / 비고 */}
         <div className="py-6 border-b border-slate-200 space-y-4 text-xs sm:text-sm">
-          <h2 className="font-bold text-slate-900 border-l-4 border-teal-700 pl-2.5 mb-2.5 tracking-tight text-sm">■ 4. 특이사항 및 비고</h2>
+          <h2 className="font-bold text-slate-900 border-l-4 border-teal-700 pl-2.5 mb-2.5 tracking-tight text-sm">■ 5. 특이사항 및 비고</h2>
           <ul className="list-disc pl-5 space-y-2.5 text-xs text-slate-700 font-medium">
             {suitabilityList.flatMap((s) => s.notes).map((n, i) => (
               <li key={`suit-${i}`} className="text-amber-800">시스템 적합성: {n}</li>
@@ -376,19 +423,19 @@ ${specText}
             - 반올림 전 원값 상세 기록:<br />
             {assayResults.map((r, i) => (
               <span key={i} className="block pl-3 font-semibold text-slate-700 mt-1">
-                • {r.componentName} ({r.sampleId}): 계산치={r.rawAssay.toFixed(8)}% → 최종보고={r.roundedAssay.toFixed(2)}% (사사오입 반올림 적용)
+                • {r.componentName} ({r.sampleId}): 계산치={r.rawAssay.toFixed(8)}% → 최종보고={r.roundedAssay.toFixed(2)}% (소수점 이하 2자리 반올림 적용)
               </span>
             ))}
           </p>
           <p className="border-t border-slate-200 pt-2.5 text-[10px] text-slate-400">
-            본 문서는 시스템 적합성 검증 및 규정된 사사오입 계산 규칙에 따라 작성된 컴퓨터 생성 보고서입니다.
+            본 문서는 시스템 적합성 검증 및 규정된 표준 반올림 계산 규칙에 따라 작성된 컴퓨터 생성 보고서입니다.
             GMP 가이드라인에 따라 문서 무결성을 위해 계산 상세가 원본 그대로 추적되며, 수동 위변조를 금지합니다.
           </p>
         </div>
 
         {/* 바닥글 */}
         <div className="text-center pt-10 text-[10px] text-slate-400 border-t border-slate-200 space-y-1.5 font-sans">
-          <p className="font-bold text-slate-500">※ 본 문서는 AI 보조 도구로 산출된 초안이며, 정식 GMP 문서로 사용하기 전 QC 책임자의 검토·승인 및 원본 raw data 대사가 필요합니다.</p>
+          <p className="font-bold text-slate-500">※ 본 문서는 AI 보조 도구로 산출된 초안이며, 정식 GMP 문서로 사용하기 전 QC 책임자의 검토·승인 및 원본 Raw Data 대사가 필요합니다.</p>
           <p className="font-mono">HPLC Assay Report draft generated securely on {new Date().toLocaleString()}</p>
         </div>
       </div>

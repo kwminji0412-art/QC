@@ -47,6 +47,8 @@ export interface SystemSuitabilityResult {
   areaStatus: "적합" | "부적합" | "확인불가";
   overallStatus: "적합" | "부적합" | "반복주입 부족";
   notes: string[];
+  rtRSDFormula?: string;
+  areaRSDFormula?: string;
 }
 
 export interface AssayResultRow {
@@ -56,7 +58,9 @@ export interface AssayResultRow {
   area: number;
   stdAreaMean: number;
   correctionFactor: number;
-  rawAssay: number;         // 반올림 전 원값
+  correctionFactorFormula?: string;
+  formulaExpression?: string;
+  rawAssay: number;         // 반올림 전 Raw Value
   roundedAssay: number;     // 반올림된 함량 (%)
   status: "적합" | "부적합" | "미등록" | "시료 미검출";
   deviationDirection: "초과" | "미달" | "정상" | "N/A";
